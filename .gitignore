@@ -1,6 +1,8 @@
 build/
 *.nacp
 *.nro
+nxlink
+nxlink.exe
 
 # Prerequisites
 *.d
