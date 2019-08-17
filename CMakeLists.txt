@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories(include ../sdl-dex/include)
 
-add_executable(sdl_dex_test
+add_executable(rumbletest
         include/Controller1.h
         include/Model1.h
         include/View1.h

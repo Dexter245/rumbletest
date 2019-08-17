@@ -12,6 +12,7 @@ private:
     Model1 &model;
     dex::Image background;
     dex::Font font;
+    dex::Vibration::VibrationData &vibrationData;
 
 public:
     explicit View1(Model1 &model);

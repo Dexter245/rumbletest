@@ -5,15 +5,23 @@
 View1::View1(Model1 &model) :
     model(model),
     background("background.png"),
-    font("DroidSansMono.ttf", 18)
+    font("DroidSansMono.ttf", 18),
+    vibrationData(model.getVibrationData())
 {
-    std::cout << "View1 constructor" << std::endl;
-    std::cout << "background: " << &background << std::endl;
+//    vibrationData = model.getVibrationData();
+    std::cout << "model: " << &model << std::endl;
+    std::cout << "vibraitonData: " << &vibrationData << std::endl;
 }
 
 void View1::render() {
-//    std::cout << "view1 render" << std::endl;
     background.draw(0, 0);
-    font.renderText("fontTest", 50, 50);
-    font.renderText("fontTest", 50, 150, {255, 0, 0, 255});
+
+    std::string text = "Frequency low: " + std::to_string(vibrationData.freqLow);
+    font.renderText(text, 50, 50);
+    text = "Amplitude low: " + std::to_string(vibrationData.ampLow);
+    font.renderText(text, 50, 75);
+    text = "Frequency high: " + std::to_string(vibrationData.freqHigh);
+    font.renderText(text, 50, 100);
+    text = "Amplitude high: " + std::to_string(vibrationData.ampHigh);
+    font.renderText(text, 50, 125);
 }

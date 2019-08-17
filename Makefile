@@ -29,7 +29,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #     - icon.jpgK
 #     - <libnx folder>/default_icon.jpg
 #---------------------------------------------------------------------------------
-IP			:=	192.168.0.100
+IP			:=	192.168.0.101
 TARGET		:=	rumbletest
 BUILD		:=	build
 SOURCES		:=	source ../sdl-dex/source/

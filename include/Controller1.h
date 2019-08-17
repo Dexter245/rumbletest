@@ -10,15 +10,19 @@
 class Controller1 : public dex::Controller {
 
 private:
-    Model1 *model;
+    const float MIN_FREQ = 10.0f;
+    const float MAX_FREQ = 1000.0f;
+    Model1 &model;
+    SDL_GameController *gameController;
     dex::Vibration vibration;
     dex::Sixaxis sixaxis;
-    SDL_GameController *gameController;
+    dex::Vibration::VibrationData &vibrationData;
+    bool vibrationActive = false;
 
     void handleEvents();
 
 public:
-    explicit Controller1(Model1 *model);
+    explicit Controller1(Model1 &model);
 
     ~Controller1() override;
 

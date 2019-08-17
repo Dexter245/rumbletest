@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     dex::Application *app = &dex::Application::instance();
 
     Model1 *model1 = new Model1();
-    Controller1 *controller1 = new Controller1(model1);
+    Controller1 *controller1 = new Controller1(*model1);
     View1 *view1 = new View1(*model1);
 
     app->setController(controller1);

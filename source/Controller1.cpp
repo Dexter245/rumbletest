@@ -4,37 +4,56 @@
 #include <Controller1.h>
 
 
-Controller1::Controller1(Model1 *model) :
-        model(model){
+Controller1::Controller1(Model1 &model) :
+        model(model),
+        vibrationData(model.getVibrationData())
+{
     gameController = SDL_GameControllerOpen(0);
+//    vibrationData = model.getVibrationData();
+    std::cout << "model: " << &model << std::endl;
+    std::cout << "vibraitonData: " << &vibrationData << std::endl;
 }
 
 Controller1::~Controller1() {
-
+    SDL_GameControllerClose(gameController);
 }
 
 void Controller1::update(float delta) {
 
 //    std::cout << "controller1 update" << std::endl;
 
+    SDL_GameControllerUpdate();
     handleEvents();
 
-    SDL_GameControllerUpdate();
-    int x1 = SDL_GameControllerGetAxis(gameController, SDL_CONTROLLER_AXIS_LEFTX);
-    std::cout << "x1: " << x1 << std::endl;
+    float x1 = SDL_GameControllerGetAxis(gameController, SDL_CONTROLLER_AXIS_LEFTX);
+    float y1 = SDL_GameControllerGetAxis(gameController, SDL_CONTROLLER_AXIS_LEFTY);
+    float x2 = SDL_GameControllerGetAxis(gameController, SDL_CONTROLLER_AXIS_RIGHTX);
+    float y2 = SDL_GameControllerGetAxis(gameController, SDL_CONTROLLER_AXIS_RIGHTY);
 
-    //test vibration
-//    dex::Vibration::VibrationData vibrationData;
-//    vibrationData.ampLow = 0.2f;
-//    vibrationData.ampHigh = 0.2f;
-//    vibration.setVibration(vibrationData);
-//    vibration.stopVibration();
+    //clamp from [-32768; 32768] to [0; 1]
+    float axisMax = 32768;
+    x1 = ((x1+axisMax) / (2*axisMax));
+    y1 = ((y1+axisMax) / (2*axisMax));
+    x2 = ((x2+axisMax) / (2*axisMax));
+    y2 = ((y2+axisMax) / (2*axisMax));
 
-    //test sixaxis
-//    sixaxis.update();
-//    dex::Sixaxis::InputVector accel = sixaxis.getAccelerometer();
-//    std::cout << "accel x: " << accel.x << ", y: " << accel.y << ", z: " << accel.z << std::endl;
+    float freqDiff = MAX_FREQ - MIN_FREQ;
+    vibrationData.freqLow = MIN_FREQ + freqDiff * x1;
+    vibrationData.ampLow = 1.0f - y1;
+    vibrationData.freqHigh = MIN_FREQ + freqDiff * x2;
+    vibrationData.ampHigh = 1.0f - y2;
 
+//    std::cout << "x1: " << x1 << ", y1: " << y1 << ", x2: " << x2 << ", y2: " << y2 << ", ";
+//    std::cout << "freqLow: " << vibrationData.freqLow << ", ampLow: " << vibrationData.ampLow <<
+//        ", freqHigh: " << vibrationData.freqHigh << ", ampHigh: " << vibrationData.ampHigh << std::endl;
+
+    if(vibrationActive){
+        std::cout << "sending vibraitondata" << std::endl;
+        vibration.setVibration(vibrationData);
+    }else{
+        std::cout << "sending vibrationstop" << std::endl;
+        vibration.stopVibration();
+    }
 
 }
 
@@ -48,10 +67,19 @@ void Controller1::handleEvents() {
                 std::cout << "escape pressed" << std::endl;
                 dex::Application::instance().end();
             }
-        }else if(e.type == SDL_CONTROLLERBUTTONDOWN){
-            if(e.jbutton.button == SDL_CONTROLLER_BUTTON_START){
+        }else if(e.type == SDL_CONTROLLERBUTTONDOWN) {
+            if (e.jbutton.button == SDL_CONTROLLER_BUTTON_START) {
                 std::cout << "buttondown" << std::endl;
                 dex::Application::instance().end();
+            }
+            else if (e.jbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) {
+                vibrationActive = true;
+                std::cout << "vibration activated" << std::endl;
+            }
+        }else if(e.type == SDL_CONTROLLERBUTTONUP){
+            if (e.jbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) {
+                vibrationActive = false;
+                std::cout << "vibration deactivated" << std::endl;
             }
         }
     }
