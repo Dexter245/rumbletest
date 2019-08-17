@@ -9,9 +9,6 @@ Controller1::Controller1(Model1 &model) :
         vibrationData(model.getVibrationData())
 {
     gameController = SDL_GameControllerOpen(0);
-//    vibrationData = model.getVibrationData();
-    std::cout << "model: " << &model << std::endl;
-    std::cout << "vibraitonData: " << &vibrationData << std::endl;
 }
 
 Controller1::~Controller1() {
@@ -48,10 +45,8 @@ void Controller1::update(float delta) {
 //        ", freqHigh: " << vibrationData.freqHigh << ", ampHigh: " << vibrationData.ampHigh << std::endl;
 
     if(vibrationActive){
-        std::cout << "sending vibraitondata" << std::endl;
         vibration.setVibration(vibrationData);
     }else{
-        std::cout << "sending vibrationstop" << std::endl;
         vibration.stopVibration();
     }
 
